@@ -50,6 +50,7 @@ int main(void)
 
 	while (!gameEnd)
 	{
+		colChoice = -1;
 		if (userTurn) 
 		{
 			colChoice = askUserMove(mainBoard);
@@ -63,18 +64,12 @@ int main(void)
 			makeMove(mainBoard, colChoice, userTurn);
 			printBoard(mainBoard);
 		}
-		if (!isMovesLeft(mainBoard)) 
+		if (!isMovesLeft(mainBoard) || checkIfOWins(mainBoard) || checkIfXWins(mainBoard))
 		{
 			gameEnd = true;
 		}
-		if (checkIfOWins(mainBoard)) 
-		{
-			gameEnd = true;
-		}
-		if (checkIfXWins(mainBoard))
-		{
-			gameEnd = true;
-		}
+		
+
 		if(userTurn)
 			userTurn = false;
 		else
@@ -110,7 +105,7 @@ bool checkIfXWins(char* board[sizeRow])
 						inARow++;
 						if (inARow == 4) 
 						{
-							std::cout << "X wins diag 1";
+							std::cout << "X wins diag 1\n";
 							return true;
 						}
 					}
@@ -128,18 +123,18 @@ bool checkIfXWins(char* board[sizeRow])
 	//Diagonal 2
 	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++)
 	{
-		for (int i = sizeRow-1; i >= 0; i--)
+		for (int i = 0; i < sizeRow; i++)
 		{
 			for (int j = 0; j < sizeCol; j++)
 			{
 				if ((sizeRow - 1 - i) + j == index)
 				{
-					if (board[sizeRow-1-i][j] == 'x')
+					if (board[i][j] == 'x')
 					{
 						inARow++;
 						if (inARow == 4)
 						{
-							std::cout << "X wins diag 2";
+							std::cout << "X wins diag 2\n";
 							return true;
 						}
 					}
@@ -164,7 +159,7 @@ bool checkIfXWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "X wins horz";
+					std::cout << "X wins horz\n";
 					return true;
 				}
 			}
@@ -188,7 +183,7 @@ bool checkIfXWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "X wins vert";
+					std::cout << "X wins vert\n";
 					return true;
 				}
 			}
@@ -221,7 +216,7 @@ bool checkIfOWins(char* board[sizeRow])
 						inARow++;
 						if (inARow == 4)
 						{
-							std::cout << "O wins diag 1";
+							std::cout << "O wins diag 1\n";
 							return true;
 						}
 					}
@@ -239,18 +234,18 @@ bool checkIfOWins(char* board[sizeRow])
 	//Diagonal 2
 	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++)
 	{
-		for (int i = sizeRow - 1; i >= 0; i--)
+		for (int i = 0; i < sizeRow; i++)
 		{
 			for (int j = 0; j < sizeCol; j++)
 			{
 				if ((sizeRow - 1 - i) + j == index)
 				{
-					if (board[sizeRow - 1 - i][j] == 'o')
+					if (board[i][j] == 'o')
 					{
 						inARow++;
 						if (inARow == 4)
 						{
-							std::cout << "O wins diag 2";
+							std::cout << "O wins diag 2\n";
 							return true;
 						}
 					}
@@ -275,7 +270,7 @@ bool checkIfOWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "O wins horz";
+					std::cout << "O wins horz\n";
 					return true;
 				}
 			}
@@ -299,7 +294,7 @@ bool checkIfOWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "O wins vert";
+					std::cout << "O wins vert\n";
 					return true;
 				}
 			}
