@@ -14,6 +14,7 @@ const int sizeRow = 8;
 const int sizeCol = 9;
 
 int numOfNodesExplored = 0;
+int numOfCompMoves = 0;
 
 bool checkIfXWins(char* board[sizeRow]);
 bool checkIfOWins(char* board[sizeRow]);
@@ -59,6 +60,7 @@ int main(void)
 		if (!userTurn) 
 		{
 			colChoice = findBestMove(mainBoard);
+			numOfCompMoves++;
 			makeMove(mainBoard, colChoice, userTurn);
 			printBoard(mainBoard);
 		}
@@ -391,17 +393,21 @@ int findBestMove(char* board[sizeRow])
 	}
 	if (worstVal != -10 && bestVal != 10)
 	{
-		if (checkCol(board, sizeCol / 2) && checkIfWinPossibleVert(board, sizeCol / 2))
+		if (checkCol(board, sizeCol / 2) && checkIfWinPossibleVert(board, sizeCol / 2) && numOfCompMoves != 0)
 		{
 			bestMove = sizeCol / 2;
 		}
-		else if (checkCol(board, sizeCol - 1) && checkIfWinPossibleVert(board, sizeCol - 1))
+		else if (checkCol(board, sizeCol - 1) && checkIfWinPossibleVert(board, sizeCol - 1) && numOfCompMoves != 0)
 		{
 			bestMove = sizeCol - 1;
 		}
-		else if(checkCol(board, 0) && checkIfWinPossibleVert(board, 0))
+		else if(checkCol(board, 0) && checkIfWinPossibleVert(board, 0) && numOfCompMoves != 0)
 		{
 			bestMove = 0;
+		}
+		else if (checkCol(board, (sizeCol-1) / 4) && checkIfWinPossibleVert(board, (sizeCol-1) / 4)) 
+		{
+			bestMove = (sizeCol-1) / 4;
 		}
 	}
 	return bestMove;
