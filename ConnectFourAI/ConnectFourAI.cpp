@@ -20,11 +20,14 @@ bool checkIfOWins(char* board[sizeRow]);
 void printBoard(char* board[sizeRow]);
 void initBoard(char* board[sizeRow]);
 int findBestMove(char* board[sizeRow]);
-int miniMax(char* board[sizeRow], int depth, bool isMaximizing);
+int miniMax(char* board[sizeRow], int depth, int alpha, int beta, bool isMax);
 int askUserMove(char* board[sizeRow]);
 void makeMove(char* board[sizeRow], int colOfMove, bool isX);
 bool isMovesLeft(char* board[sizeRow]);
 void deleteBoard(char* board[sizeRow]);
+int evaluateScore(char* board[sizeRow]);
+bool evaluateBoard(char* board[sizeRow], bool isX, int numToCheck);
+char** copyBoard(char* board[sizeRow]);
 
 int main(void) 
 {
@@ -54,14 +57,14 @@ int main(void)
 		if (userTurn) 
 		{
 			colChoice = askUserMove(mainBoard);
-			makeMove(mainBoard, colChoice, userTurn);
+			makeMove(mainBoard, colChoice, !userTurn);
 			printBoard(mainBoard);
 		}
 		
 		if (!userTurn) 
 		{
-			colChoice = askUserMove(mainBoard);
-			makeMove(mainBoard, colChoice, userTurn);
+			colChoice = findBestMove(mainBoard);
+			makeMove(mainBoard, colChoice, !userTurn);
 			printBoard(mainBoard);
 		}
 		if (!isMovesLeft(mainBoard) || checkIfOWins(mainBoard) || checkIfXWins(mainBoard))
@@ -105,7 +108,7 @@ bool checkIfXWins(char* board[sizeRow])
 						inARow++;
 						if (inARow == 4) 
 						{
-							std::cout << "X wins diag 1\n";
+							//std::cout << "X wins diag 1\n";
 							return true;
 						}
 					}
@@ -134,7 +137,7 @@ bool checkIfXWins(char* board[sizeRow])
 						inARow++;
 						if (inARow == 4)
 						{
-							std::cout << "X wins diag 2\n";
+							//std::cout << "X wins diag 2\n";
 							return true;
 						}
 					}
@@ -159,7 +162,7 @@ bool checkIfXWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "X wins horz\n";
+					//std::cout << "X wins horz\n";
 					return true;
 				}
 			}
@@ -183,7 +186,7 @@ bool checkIfXWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "X wins vert\n";
+					//std::cout << "X wins vert\n";
 					return true;
 				}
 			}
@@ -216,7 +219,7 @@ bool checkIfOWins(char* board[sizeRow])
 						inARow++;
 						if (inARow == 4)
 						{
-							std::cout << "O wins diag 1\n";
+							//std::cout << "O wins diag 1\n";
 							return true;
 						}
 					}
@@ -245,7 +248,7 @@ bool checkIfOWins(char* board[sizeRow])
 						inARow++;
 						if (inARow == 4)
 						{
-							std::cout << "O wins diag 2\n";
+							//std::cout << "O wins diag 2\n";
 							return true;
 						}
 					}
@@ -270,7 +273,7 @@ bool checkIfOWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "O wins horz\n";
+					//std::cout << "O wins horz\n";
 					return true;
 				}
 			}
@@ -294,7 +297,7 @@ bool checkIfOWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "O wins vert\n";
+					//std::cout << "O wins vert\n";
 					return true;
 				}
 			}
@@ -356,14 +359,90 @@ void initBoard(char* board[sizeRow])
 	}
 }
 
+//done
 int findBestMove(char* board[sizeRow])
 {
-	return 0;
+	int bestVal = -10000;
+	int bestMove;
+	bool validMove = false;
+
+	for (int i = 0; i < sizeCol; i++) {
+		
+				char** newBoard = copyBoard(board);
+				makeMove(newBoard, i, true);
+				int moveVal = miniMax(newBoard, 5, -10000, 10000, true);
+
+				if (moveVal > bestVal) {
+					bestVal = moveVal;
+					bestMove = i;
+				}
+	}
+	return bestMove;
 }
 
-int miniMax(char* board[sizeRow], int depth, bool isMaximizing)
-{
-	return 0;
+//slight changes
+int miniMax(char* board[sizeRow], int depth, int alpha, int beta, bool isMax) {
+	if (checkIfOWins(board)) {
+		return -10;
+	}
+	if (checkIfXWins(board)) {
+		return 10;
+	}
+	
+	if (isMovesLeft(board) == false) {
+			return 0;
+	}
+
+	if (depth == 0) {
+		return evaluateScore(board);
+	}
+
+	if (isMax) {
+		bool validMove = false;
+		int value = -100000;
+		for (int i = 0; i < sizeCol; i++) {
+			if (board[0][i] == ' ') {
+				validMove = true;
+			}
+			char** newBoard = copyBoard(board);
+			if (validMove = true) {
+				makeMove(newBoard, i, true);
+			}
+			else {
+				break;
+			}
+			int newValue = miniMax(newBoard, depth - 1, alpha, beta, false);
+			if (newValue > value) {
+				value = newValue;
+			}
+			alpha = std::max(alpha, value);
+			if (alpha >= beta) {
+				break;
+			}
+		}
+		return value;
+	}
+
+		bool validMove = false;
+		int value = 100000;
+		for (int i = 0; i < sizeCol; i++) {
+			if (board[0][i] == ' ') {
+				validMove = true;
+			}
+			char** newBoard = copyBoard(board);
+			if (validMove = true) {
+				makeMove(newBoard, i, true);
+			}
+			int newValue = miniMax(newBoard, depth - 1, alpha, beta, true);
+			if (newValue < value) {
+				value = newValue;
+			}
+			beta = std::max(beta, value);
+			if (alpha >= beta) {
+				break;
+			}
+		}
+		return value;
 }
 
 // Done
@@ -453,10 +532,166 @@ bool isMovesLeft(char* board[sizeRow])
 	return false;
 }
 
+int evaluateScore(char* board[sizeRow]) {
+	int score = 0;
+	for (int i = 0; i < sizeRow; i++) {
+		if (board[i][4] == 'x') {
+			score += 3;
+		}
+		if (board[i][5] == 'x') {
+			score += 3;
+		}
+		if (board[i][4] == 'o') {
+			score -= 3;
+		}
+		if (board[i][5] == 'o') {
+			score -= 3;
+		}
+	}
+
+	if (evaluateBoard(board, true, 3)) {
+		score += 7;
+	}
+
+	if (evaluateBoard(board, true, 2)) {
+		score += 5;
+	}
+
+	if (evaluateBoard(board, false, 3)) {
+		score -= 7;
+	}
+	if (evaluateBoard(board, false, 2)) {
+		score -= 5;
+	}
+
+	return score;
+}
+
+
 // Done
 void deleteBoard(char* board[sizeRow]) 
 {
 	for (int i = 0; i < sizeRow; i++) // Delete Arrays from Stack
 		delete[] board[i];
 	delete[] board;
+}
+
+bool evaluateBoard(char* board[sizeRow], bool isX, int numToCheck) {
+	int inARow = 0;
+	char c = 'x';
+	//Diagonal 1
+	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	{
+		for (int i = 0; i < sizeRow; i++)
+		{
+			for (int j = 0; j < sizeCol; j++)
+			{
+				if (i + j == index)
+				{
+					if (board[i][j] == c)
+					{
+						inARow++;
+						if (inARow == numToCheck)
+						{
+							return true;
+						}
+					}
+					else
+					{
+						inARow = 0;
+					}
+				}
+			}
+		}
+	}
+
+	inARow = 0;
+
+	//Diagonal 2
+	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	{
+		for (int i = 0; i < sizeRow; i++)
+		{
+			for (int j = 0; j < sizeCol; j++)
+			{
+				if ((sizeRow - 1 - i) + j == index)
+				{
+					if (board[i][j] == c)
+					{
+						inARow++;
+						if (inARow == numToCheck)
+						{
+							return true;
+						}
+					}
+					else
+					{
+						inARow = 0;
+					}
+				}
+			}
+		}
+	}
+
+	inARow = 0;
+
+	//Horz
+	for (int i = 0; i < sizeRow; i++)
+	{
+		for (int j = 0; j < sizeCol; j++)
+		{
+			if (board[i][j] == c)
+			{
+				inARow++;
+				if (inARow == numToCheck)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				inARow = 0;
+			}
+		}
+		inARow = 0;
+	}
+
+	inARow = 0;
+
+	//Vert
+	for (int i = 0; i < sizeCol; i++)
+	{
+		for (int j = 0; j < sizeRow; j++)
+		{
+			if (board[j][i] == c)
+			{
+				inARow++;
+				if (inARow == numToCheck)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				inARow = 0;
+			}
+		}
+		inARow = 0;
+	}
+
+	return false;
+}
+
+char** copyBoard(char* board[sizeRow]) {
+	char** newBoard = new char* [sizeRow];
+	for (int i = 0; i < sizeRow; i++)
+	{
+		newBoard[i] = new char[sizeCol];
+	}
+	for (unsigned int r = 0; r < sizeRow; r++) {
+		for (unsigned int c = 0; c < sizeCol; c++) {
+			newBoard[r][c] = board[r][c]; // just straight copy
+		}
+	}
+	return newBoard;
 }
