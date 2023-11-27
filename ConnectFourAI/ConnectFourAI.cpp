@@ -370,7 +370,7 @@ int findBestMove(char* board[sizeRow])
 		
 				char** newBoard = copyBoard(board);
 				makeMove(newBoard, i, true);
-				int moveVal = miniMax(newBoard, 5, -10000, 10000, true);
+				int moveVal = miniMax(newBoard, 6, -10000, 10000, false);
 
 				if (moveVal > bestVal) {
 					bestVal = moveVal;
@@ -383,10 +383,10 @@ int findBestMove(char* board[sizeRow])
 //slight changes
 int miniMax(char* board[sizeRow], int depth, int alpha, int beta, bool isMax) {
 	if (checkIfOWins(board)) {
-		return -10;
+		return -1000;
 	}
 	if (checkIfXWins(board)) {
-		return 10;
+		return 1000;
 	}
 	
 	if (isMovesLeft(board) == false) {
@@ -423,6 +423,7 @@ int miniMax(char* board[sizeRow], int depth, int alpha, int beta, bool isMax) {
 		return value;
 	}
 
+	if (!isMax) {
 		bool validMove = false;
 		int value = 100000;
 		for (int i = 0; i < sizeCol; i++) {
@@ -431,7 +432,7 @@ int miniMax(char* board[sizeRow], int depth, int alpha, int beta, bool isMax) {
 			}
 			char** newBoard = copyBoard(board);
 			if (validMove = true) {
-				makeMove(newBoard, i, true);
+				makeMove(newBoard, i, false);
 			}
 			int newValue = miniMax(newBoard, depth - 1, alpha, beta, true);
 			if (newValue < value) {
@@ -443,6 +444,7 @@ int miniMax(char* board[sizeRow], int depth, int alpha, int beta, bool isMax) {
 			}
 		}
 		return value;
+	}
 }
 
 // Done
