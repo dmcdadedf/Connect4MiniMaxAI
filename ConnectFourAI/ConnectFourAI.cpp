@@ -1,4 +1,4 @@
-//Project: Connect 4 MiniMax AI     Date:
+//Project: Connect 4 MiniMax AI     Date:12-6-2023
 //Authors: David McDade, Jared Rivard
 
 // User is x
@@ -10,8 +10,8 @@
 
 using namespace std::chrono;
 
-const int sizeRow = 7;
-const int sizeCol = 8;
+const int sizeRow = 8;
+const int sizeCol = 9;
 
 int numOfNodesExplored = 0;
 
@@ -23,8 +23,11 @@ int findBestMove(char* board[sizeRow]);
 int miniMax(char* board[sizeRow], int depth, bool isMaximizing);
 int askUserMove(char* board[sizeRow]);
 void makeMove(char* board[sizeRow], int colOfMove, bool isX);
+void unmakeMove(char* board[sizeRow], int colOfMove);
 bool isMovesLeft(char* board[sizeRow]);
+bool checkCol(char* board[sizeRow], int colOfMove);
 void deleteBoard(char* board[sizeRow]);
+bool checkIfWinPossibleVert(char* board[sizeRow], int colOfMove);
 
 int main(void) 
 {
@@ -43,11 +46,6 @@ int main(void)
 	
 	printBoard(mainBoard);
 
-	if (checkIfXWins(mainBoard)) 
-	{
-		std::cout << "\nX Wins\n";
-	}
-
 	while (!gameEnd)
 	{
 		colChoice = -1;
@@ -60,12 +58,24 @@ int main(void)
 		
 		if (!userTurn) 
 		{
-			colChoice = askUserMove(mainBoard);
+			colChoice = findBestMove(mainBoard);
 			makeMove(mainBoard, colChoice, userTurn);
 			printBoard(mainBoard);
 		}
 		if (!isMovesLeft(mainBoard) || checkIfOWins(mainBoard) || checkIfXWins(mainBoard))
 		{
+			if (!isMovesLeft(mainBoard)) 
+			{
+				std::cout << "Draw \n";
+			}
+			if (checkIfOWins(mainBoard)) 
+			{
+				std::cout << "Comp Wins \n";
+			}
+			if(checkIfXWins(mainBoard))
+			{
+				std::cout << "Human Wins \n";
+			}
 			gameEnd = true;
 		}
 		
@@ -87,7 +97,7 @@ int main(void)
 	return 0;
 }
 
-
+// Done
 bool checkIfXWins(char* board[sizeRow])
 {
 	int inARow = 0;
@@ -105,7 +115,6 @@ bool checkIfXWins(char* board[sizeRow])
 						inARow++;
 						if (inARow == 4) 
 						{
-							std::cout << "X wins diag 1\n";
 							return true;
 						}
 					}
@@ -134,7 +143,6 @@ bool checkIfXWins(char* board[sizeRow])
 						inARow++;
 						if (inARow == 4)
 						{
-							std::cout << "X wins diag 2\n";
 							return true;
 						}
 					}
@@ -159,7 +167,6 @@ bool checkIfXWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "X wins horz\n";
 					return true;
 				}
 			}
@@ -183,7 +190,6 @@ bool checkIfXWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "X wins vert\n";
 					return true;
 				}
 			}
@@ -198,7 +204,7 @@ bool checkIfXWins(char* board[sizeRow])
 	return false;
 }
 
-
+// Done
 bool checkIfOWins(char* board[sizeRow])
 {
 	int inARow = 0;
@@ -216,7 +222,6 @@ bool checkIfOWins(char* board[sizeRow])
 						inARow++;
 						if (inARow == 4)
 						{
-							std::cout << "O wins diag 1\n";
 							return true;
 						}
 					}
@@ -245,7 +250,6 @@ bool checkIfOWins(char* board[sizeRow])
 						inARow++;
 						if (inARow == 4)
 						{
-							std::cout << "O wins diag 2\n";
 							return true;
 						}
 					}
@@ -270,7 +274,6 @@ bool checkIfOWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "O wins horz\n";
 					return true;
 				}
 			}
@@ -294,7 +297,6 @@ bool checkIfOWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
-					std::cout << "O wins vert\n";
 					return true;
 				}
 			}
@@ -337,7 +339,15 @@ void printBoard(char* board[sizeRow])
 	{
 		if (j != sizeCol)
 		{
-			std::cout << " " << j + 1 << "  ";
+			if (j < 10) 
+			{
+				std::cout << " " << j + 1 << "  ";
+			}
+			else 
+			{
+				std::cout << " " << j + 1 << " ";
+			}
+			
 		}
 	}
 	std::cout << "\n";
@@ -358,12 +368,96 @@ void initBoard(char* board[sizeRow])
 
 int findBestMove(char* board[sizeRow])
 {
-	return 0;
+	int bestVal = -100;
+	int worstVal = 1000;
+	int bestMove = -1;
+	
+	for (int i = 0; i < sizeCol; i++) 
+	{
+		if (checkCol(board,i)) 
+		{
+			makeMove(board, i, false);
+			int moveVal = miniMax(board, 0, false);
+			unmakeMove(board, i);
+			if (moveVal > bestVal) {
+				bestVal = moveVal;
+				bestMove = i;
+			}
+			if (moveVal < worstVal) 
+			{
+				worstVal = moveVal;
+			}
+		}
+	}
+	if (worstVal != -10 && bestVal != 10)
+	{
+		if (checkCol(board, sizeCol / 2) && checkIfWinPossibleVert(board, sizeCol / 2))
+		{
+			bestMove = sizeCol / 2;
+		}
+		else if (checkCol(board, sizeCol - 1) && checkIfWinPossibleVert(board, sizeCol - 1))
+		{
+			bestMove = sizeCol - 1;
+		}
+		else if(checkCol(board, 0) && checkIfWinPossibleVert(board, 0))
+		{
+			bestMove = 0;
+		}
+	}
+	return bestMove;
 }
 
 int miniMax(char* board[sizeRow], int depth, bool isMaximizing)
 {
-	return 0;
+	numOfNodesExplored++;
+	if (depth > 4) 
+	{
+		return 0;
+	}
+	if (checkIfXWins(board))
+	{
+		return -10;
+	}
+	if (checkIfOWins(board))
+	{
+		return 10;
+	}
+	if (!isMovesLeft(board))
+	{
+		return 0;
+	}
+	if (isMaximizing)
+	{
+		int bestVal = -1000;
+		for (int i = 0; i < sizeCol; i++)
+		{
+			if (checkCol(board,i))
+			{
+				makeMove(board, i, false);
+				//printBoard(board);
+				bestVal = std::max(bestVal, miniMax(board, depth + 1, false));
+				unmakeMove(board, i);
+			}
+
+
+		}
+		return bestVal;
+	}
+	else
+	{
+		int bestVal = 1000;
+		for (int i = 0; i < sizeCol; i++)
+		{
+			if (checkCol(board,i))
+			{
+				makeMove(board, i, true);
+				//printBoard(board);
+				bestVal = std::min(bestVal, miniMax(board, depth + 1, true));
+				unmakeMove(board, i);
+			}
+		}
+		return bestVal;
+	}
 }
 
 // Done
@@ -436,6 +530,20 @@ void makeMove(char* board[sizeRow], int colOfMove, bool isX)
 	}
 }
 
+void unmakeMove(char* board[sizeRow], int colOfMove)
+{
+	bool moveMade = false;
+
+	for (int i = 0; i < sizeRow; i++)
+	{
+			if (board[i][colOfMove] != ' ')
+			{
+				board[i][colOfMove] = ' ';
+				return;
+			}
+	}
+}
+
 // Done
 bool isMovesLeft(char* board[sizeRow])
 {
@@ -449,9 +557,33 @@ bool isMovesLeft(char* board[sizeRow])
 			}
 		}
 	}
-	std::cout << "No Moves Left\n";
 	return false;
 }
+
+bool checkCol(char* board[sizeRow], int colOfMove)
+{
+	for (int i = 0; i < sizeRow; i++)
+	{
+		if (board[i][colOfMove] == ' ') 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool checkIfWinPossibleVert(char* board[sizeRow], int colOfMove)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (board[i][colOfMove] == 'x')
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 
 // Done
 void deleteBoard(char* board[sizeRow]) 
