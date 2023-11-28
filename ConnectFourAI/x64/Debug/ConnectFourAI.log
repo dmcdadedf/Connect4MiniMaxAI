@@ -1,3 +1,3 @@
 ﻿  ConnectFourAI.cpp
-F:\Connect4MiniMaxAI\ConnectFourAI\ConnectFourAI.cpp(448): warning C4715: 'miniMax': not all control paths return a value
-  ConnectFourAI.vcxproj -> F:\Connect4MiniMaxAI\x64\Debug\ConnectFourAI.exe
+C:\Users\mcdad\Documents\GitHub\Connect4MiniMaxAI\ConnectFourAI\ConnectFourAI.cpp(452): warning C4715: 'miniMax': not all control paths return a value
+  ConnectFourAI.vcxproj -> C:\Users\mcdad\Documents\GitHub\Connect4MiniMaxAI\x64\Debug\ConnectFourAI.exe

@@ -10,8 +10,8 @@
 
 using namespace std::chrono;
 
-const int sizeRow = 7;
-const int sizeCol = 8;
+const int sizeRow = 5;
+const int sizeCol = 6;
 
 int numOfNodesExplored = 0;
 
@@ -95,7 +95,7 @@ bool checkIfXWins(char* board[sizeRow])
 {
 	int inARow = 0;
 	//Diagonal 1
-	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++) 
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++) 
 	{
 		for (int i = 0; i < sizeRow; i++) 
 		{
@@ -119,12 +119,13 @@ bool checkIfXWins(char* board[sizeRow])
 				}
 			}
 		}
+		inARow = 0;
 	}
 
 	inARow = 0;
 
 	//Diagonal 2
-	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++)
 	{
 		for (int i = 0; i < sizeRow; i++)
 		{
@@ -148,6 +149,7 @@ bool checkIfXWins(char* board[sizeRow])
 				}
 			}
 		}
+		inARow = 0;
 	}
 
 	inARow = 0;
@@ -206,7 +208,7 @@ bool checkIfOWins(char* board[sizeRow])
 {
 	int inARow = 0;
 	//Diagonal 1
-	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++)
 	{
 		for (int i = 0; i < sizeRow; i++)
 		{
@@ -230,12 +232,13 @@ bool checkIfOWins(char* board[sizeRow])
 				}
 			}
 		}
+		inARow = 0;
 	}
 
 	inARow = 0;
 
 	//Diagonal 2
-	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++)
 	{
 		for (int i = 0; i < sizeRow; i++)
 		{
@@ -259,6 +262,7 @@ bool checkIfOWins(char* board[sizeRow])
 				}
 			}
 		}
+		inARow = 0;
 	}
 
 	inARow = 0;
