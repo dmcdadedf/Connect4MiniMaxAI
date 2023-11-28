@@ -10,14 +10,16 @@
 
 using namespace std::chrono;
 
-const int sizeRow = 8;
-const int sizeCol = 9;
+const int sizeRow = 5;
+const int sizeCol = 6;
 
 int numOfNodesExplored = 0;
 int numOfCompMoves = 0;
 
 bool checkIfXWins(char* board[sizeRow]);
 bool checkIfOWins(char* board[sizeRow]);
+bool checkIfXWinsFinal(char* board[sizeRow]);
+bool checkIfOWinsFinal(char* board[sizeRow]);
 void printBoard(char* board[sizeRow]);
 void initBoard(char* board[sizeRow]);
 int findBestMove(char* board[sizeRow]);
@@ -70,14 +72,8 @@ int main(void)
 			{
 				std::cout << "Draw \n";
 			}
-			if (checkIfOWins(mainBoard)) 
-			{
-				std::cout << "Comp Wins \n";
-			}
-			if(checkIfXWins(mainBoard))
-			{
-				std::cout << "Human Wins \n";
-			}
+			checkIfOWinsFinal(mainBoard);
+			checkIfXWinsFinal(mainBoard);
 			gameEnd = true;
 		}
 		
@@ -104,7 +100,7 @@ bool checkIfXWins(char* board[sizeRow])
 {
 	int inARow = 0;
 	//Diagonal 1
-	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++) 
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++) 
 	{
 		for (int i = 0; i < sizeRow; i++) 
 		{
@@ -127,12 +123,13 @@ bool checkIfXWins(char* board[sizeRow])
 				}
 			}
 		}
+		inARow = 0;
 	}
 
 	inARow = 0;
 
 	//Diagonal 2
-	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++)
 	{
 		for (int i = 0; i < sizeRow; i++)
 		{
@@ -155,6 +152,7 @@ bool checkIfXWins(char* board[sizeRow])
 				}
 			}
 		}
+		inARow = 0;
 	}
 
 	inARow = 0;
@@ -206,12 +204,124 @@ bool checkIfXWins(char* board[sizeRow])
 	return false;
 }
 
+bool checkIfXWinsFinal(char* board[sizeRow])
+{
+	int inARow = 0;
+	//Diagonal 1
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	{
+		for (int i = 0; i < sizeRow; i++)
+		{
+			for (int j = 0; j < sizeCol; j++)
+			{
+				if (i + j == index)
+				{
+					if (board[i][j] == 'x')
+					{
+						inARow++;
+						if (inARow == 4)
+						{
+							std::cout << "Human Wins Diagonal 1 Row:" << i << " Col:" << j << "\n";
+							return true;
+						}
+					}
+					else
+					{
+						inARow = 0;
+					}
+				}
+			}
+		}
+		inARow = 0;
+	}
+
+	inARow = 0;
+
+	//Diagonal 2
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	{
+		for (int i = 0; i < sizeRow; i++)
+		{
+			for (int j = 0; j < sizeCol; j++)
+			{
+				if ((sizeRow - 1 - i) + j == index)
+				{
+					if (board[i][j] == 'x')
+					{
+						inARow++;
+						if (inARow == 4)
+						{
+							std::cout << "Human Wins Diagonal 2 Row:" << i << " Col:" << j << "\n";
+							return true;
+						}
+					}
+					else
+					{
+						inARow = 0;
+					}
+				}
+			}
+		}
+		inARow = 0;
+	}
+
+	inARow = 0;
+
+	//Horz
+	for (int i = 0; i < sizeRow; i++)
+	{
+		for (int j = 0; j < sizeCol; j++)
+		{
+			if (board[i][j] == 'x')
+			{
+				inARow++;
+				if (inARow == 4)
+				{
+					std::cout << "Human Wins Horz Row:" << i << " Col:" << j << "\n";
+					return true;
+				}
+			}
+			else
+			{
+				inARow = 0;
+			}
+		}
+		inARow = 0;
+	}
+
+	inARow = 0;
+
+	//Vert
+	for (int i = 0; i < sizeCol; i++)
+	{
+		for (int j = 0; j < sizeRow; j++)
+		{
+			if (board[j][i] == 'x')
+			{
+				inARow++;
+				if (inARow == 4)
+				{
+					std::cout << "Human Wins Vert Row:" << i << " Col:" << j << "\n";
+					return true;
+				}
+			}
+			else
+			{
+				inARow = 0;
+			}
+		}
+		inARow = 0;
+	}
+
+	return false;
+}
+
 // Done
 bool checkIfOWins(char* board[sizeRow])
 {
 	int inARow = 0;
 	//Diagonal 1
-	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++)
 	{
 		for (int i = 0; i < sizeRow; i++)
 		{
@@ -234,12 +344,13 @@ bool checkIfOWins(char* board[sizeRow])
 				}
 			}
 		}
+		inARow = 0;
 	}
 
 	inARow = 0;
 
 	//Diagonal 2
-	for (int index = 3; index < (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++)
 	{
 		for (int i = 0; i < sizeRow; i++)
 		{
@@ -262,6 +373,7 @@ bool checkIfOWins(char* board[sizeRow])
 				}
 			}
 		}
+		inARow = 0;
 	}
 
 	inARow = 0;
@@ -299,6 +411,118 @@ bool checkIfOWins(char* board[sizeRow])
 				inARow++;
 				if (inARow == 4)
 				{
+					return true;
+				}
+			}
+			else
+			{
+				inARow = 0;
+			}
+		}
+		inARow = 0;
+	}
+
+	return false;
+}
+
+bool checkIfOWinsFinal(char* board[sizeRow])
+{
+	int inARow = 0;
+	//Diagonal 1
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	{
+		for (int i = 0; i < sizeRow; i++)
+		{
+			for (int j = 0; j < sizeCol; j++)
+			{
+				if (i + j == index)
+				{
+					if (board[i][j] == 'o')
+					{
+						inARow++;
+						if (inARow == 4)
+						{
+							std::cout << "Comp Wins Diagonal 1 Row:" << i << " Col:" << j << "\n";
+							return true;
+						}
+					}
+					else
+					{
+						inARow = 0;
+					}
+				}
+			}
+		}
+		inARow = 0;
+	}
+
+	inARow = 0;
+
+	//Diagonal 2
+	for (int index = 3; index <= (sizeRow - 1) + (sizeCol - 1) - 3; index++)
+	{
+		for (int i = 0; i < sizeRow; i++)
+		{
+			for (int j = 0; j < sizeCol; j++)
+			{
+				if ((sizeRow - 1 - i) + j == index)
+				{
+					if (board[i][j] == 'o')
+					{
+						inARow++;
+						if (inARow == 4)
+						{
+							std::cout << "Comp Wins Diagonal 2 Row:" << i << " Col:" << j << "\n";
+							return true;
+						}
+					}
+					else
+					{
+						inARow = 0;
+					}
+				}
+			}
+		}
+		inARow = 0;
+	}
+
+	inARow = 0;
+
+	//Horz
+	for (int i = 0; i < sizeRow; i++)
+	{
+		for (int j = 0; j < sizeCol; j++)
+		{
+			if (board[i][j] == 'o')
+			{
+				inARow++;
+				if (inARow == 4)
+				{
+					std::cout << "Comp Wins Horz Row:" << i << " Col:" << j << "\n";
+					return true;
+				}
+			}
+			else
+			{
+				inARow = 0;
+			}
+		}
+		inARow = 0;
+	}
+
+	inARow = 0;
+
+	//Vert
+	for (int i = 0; i < sizeCol; i++)
+	{
+		for (int j = 0; j < sizeRow; j++)
+		{
+			if (board[j][i] == 'o')
+			{
+				inARow++;
+				if (inARow == 4)
+				{
+					std::cout << "Comp Wins Vert Row:" << i << " Col:" << j << "\n";
 					return true;
 				}
 			}
@@ -416,7 +640,7 @@ int findBestMove(char* board[sizeRow])
 int miniMax(char* board[sizeRow], int depth, bool isMaximizing)
 {
 	numOfNodesExplored++;
-	if (depth > 4) 
+	if (depth > 6) 
 	{
 		return 0;
 	}
@@ -435,6 +659,7 @@ int miniMax(char* board[sizeRow], int depth, bool isMaximizing)
 	if (isMaximizing)
 	{
 		int bestVal = -1000;
+		int val = -1000;
 		for (int i = 0; i < sizeCol; i++)
 		{
 			if (checkCol(board,i))
@@ -443,6 +668,10 @@ int miniMax(char* board[sizeRow], int depth, bool isMaximizing)
 				//printBoard(board);
 				bestVal = std::max(bestVal, miniMax(board, depth + 1, false));
 				unmakeMove(board, i);
+				/*alpha = std::max(alpha, bestVal);
+				if (alpha >= beta) {
+					break;
+				}*/
 			}
 
 
@@ -460,6 +689,10 @@ int miniMax(char* board[sizeRow], int depth, bool isMaximizing)
 				//printBoard(board);
 				bestVal = std::min(bestVal, miniMax(board, depth + 1, true));
 				unmakeMove(board, i);
+				/*beta = std::max(beta, bestVal);
+				if (alpha >= beta) {
+					break;
+				}*/
 			}
 		}
 		return bestVal;
@@ -589,7 +822,6 @@ bool checkIfWinPossibleVert(char* board[sizeRow], int colOfMove)
 	}
 	return true;
 }
-
 
 // Done
 void deleteBoard(char* board[sizeRow]) 
