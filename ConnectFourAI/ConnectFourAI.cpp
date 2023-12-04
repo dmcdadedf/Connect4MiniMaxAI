@@ -10,8 +10,8 @@
 
 using namespace std::chrono;
 
-const int sizeRow = 5;
-const int sizeCol = 6;
+const int sizeRow = 6;
+const int sizeCol = 7;
 
 int numOfNodesExplored = 0;
 int numOfCompMoves = 0;
@@ -24,7 +24,7 @@ void printBoard(char* board[sizeRow]);
 void initBoard(char* board[sizeRow]);
 int findBestMove(char* board[sizeRow]);
 int miniMax(char* board[sizeRow], int depth, bool isMaximizing);
-int askUserMove(char* board[sizeRow]);
+int askUserMove(char* board[sizeRow], int moveCount);
 void makeMove(char* board[sizeRow], int colOfMove, bool isX);
 void unmakeMove(char* board[sizeRow], int colOfMove);
 bool isMovesLeft(char* board[sizeRow]);
@@ -37,6 +37,7 @@ int main(void)
 	bool userTurn = true;
 	int colChoice = -1;
 	bool gameEnd = false;
+	int moveCount = 0;
 
 	auto start = high_resolution_clock::now();
 
@@ -54,16 +55,18 @@ int main(void)
 		colChoice = -1;
 		if (userTurn) 
 		{
-			colChoice = askUserMove(mainBoard);
+			colChoice = askUserMove(mainBoard,moveCount);
 			makeMove(mainBoard, colChoice, userTurn);
+			moveCount++;
 			printBoard(mainBoard);
 		}
 		
 		if (!userTurn) 
 		{
 			colChoice = findBestMove(mainBoard);
-			numOfCompMoves++;
 			makeMove(mainBoard, colChoice, userTurn);
+			numOfCompMoves++;
+			moveCount++;
 			printBoard(mainBoard);
 		}
 		if (!isMovesLeft(mainBoard) || checkIfOWins(mainBoard) || checkIfXWins(mainBoard))
@@ -595,7 +598,7 @@ void initBoard(char* board[sizeRow])
 int findBestMove(char* board[sizeRow])
 {
 	int bestVal = -100;
-	int worstVal = 1000;
+	int worstVal = 100;
 	int bestMove = -1;
 	
 	for (int i = 0; i < sizeCol; i++) 
@@ -640,7 +643,7 @@ int findBestMove(char* board[sizeRow])
 int miniMax(char* board[sizeRow], int depth, bool isMaximizing)
 {
 	numOfNodesExplored++;
-	if (depth > 6) 
+	if (depth > 5) 
 	{
 		return 0;
 	}
@@ -662,6 +665,7 @@ int miniMax(char* board[sizeRow], int depth, bool isMaximizing)
 		int val = -1000;
 		for (int i = 0; i < sizeCol; i++)
 		{
+			
 			if (checkCol(board,i))
 			{
 				makeMove(board, i, false);
@@ -700,7 +704,7 @@ int miniMax(char* board[sizeRow], int depth, bool isMaximizing)
 }
 
 // Done
-int askUserMove(char* board[sizeRow])
+int askUserMove(char* board[sizeRow], int moveCount)
 {
 	bool validMove = false;
 	int userChoice = -1;
@@ -712,21 +716,34 @@ int askUserMove(char* board[sizeRow])
 		{
 			std::cout << "Choose a column to play in: \n";
 			std::cin >> userChoice;
-
 			if (userChoice < 1 || userChoice > sizeCol) {
 				std::cout << "Please enter a valid number. \n";
 			}
 		}
 
 		userChoice--;
-
-		if (board[0][userChoice] == ' ') {
-			validMove = true;
+		if (moveCount > 1)
+		{
+			if (board[0][userChoice] == ' ') {
+				validMove = true;
+			}
+			else
+			{
+				std::cout << "Please enter a move in an empty space. \n";
+			}
 		}
 		else 
 		{
-			std::cout << "Please enter a move in an empty space. \n";
+			if ((userChoice != 0 && userChoice != sizeCol-1 && userChoice != sizeCol / 2))
+			{
+				validMove = true;
+			}
+			else 
+			{
+				std::cout << "Please enter a valid number. \n";
+			}
 		}
+		
 	}
 	return userChoice;
 }
